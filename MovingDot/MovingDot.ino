@@ -1,6 +1,12 @@
-
-/*movingdot.ino
+/*
+ * movingdot.ino
+ * etch-a-sketch
  * by: Taiyo Endo
+ * -use right,left,up,down buttons to move around
+ * -press right circle button to change colors
+ * -hold right circle button to cycle through colors
+ * -press left circle button to clear
+ * -use dark color to erase specific dots
  */
 
 #include <MeggyJrSimple.h>
@@ -8,95 +14,47 @@
 int x;
 int y;
 int color;
-boolean touch=false;
-int xwall;
-int ywall;
-
-struct Point
-{
-  int x;
-  int y;
-  int color;
-};
-
-Point p1={3,2,Red};
-Point p2={3,3,Red};
-Point p3={3,4,Red};
-Point p4={3,5,Red};
-Point p5={5,2,Red};
-Point p6={5,3,Red};
-Point p7={5,4,Red};
-Point p8={5,5,Red};
-
-Point points[]={p1,p2,p3,p4,p5,p6,p7,p8};
 
 void setup()
 {
   MeggyJrSimpleSetup();
-  x=0;
-  y=3;
-  color=1;
-  touch=false;
+  x = 0;
+  y = 3;
+  color = 1;
 }
-
 
 void loop() 
 {
-  drawplayer();
-  moveplayer();
-  obstacles();
-  goal();
+  drawdot();
   DisplaySlate();
-  ClearSlate();
+  movedot();
+  colordot();
 }
 
-void drawplayer()
+void drawdot()
 {
-  DrawPx(x,y,Blue);
+  DrawPx(x,y,color);  
 }
 
-
-void obstacles()
+void colordot()
 {
-  for (int i=0; i<8; i++)
+  CheckButtonsDown();
+  if (Button_A)
   {
-    DrawPx(points[i].x,points[i].y++,points[i].color);
-    delay(100);
-    if (points[i].x>7)
-    {
-      points[i].x=1;
-    }
+    color++;
+    delay(200);
   }
-
-  for (int i=2; i<6; i++)
+  if (Button_B)
   {
-    if (x=3)
-    {
-      if (y=i)
-      {
-        touch=true;        
-      }
-    }
-
-    if (x=5)
-    {
-      if (y=i)
-      {
-        touch=true;
-      }
-    }
+    ClearSlate();
   }
-  if (touch==true);
+  if (color > 15)
   {
-   x=0;
-   y=3;
-   Tone_Start(00000,100);
-   touch=false;
-  }
+    color = 0;
+  }  
 }
 
-
-void moveplayer()
+void movedot()
 {
   CheckButtonsPress();
   if (Button_Left)
@@ -132,50 +90,3 @@ void moveplayer()
     y=0;
   }
 }
-
-
-void goal()
-{
-  for (int i=2; i<6; i++)
-  {
-   DrawPx(7,i,Green); 
-  }
-}
-
-
-
-/*
-void moveenemy()
-{
- delay(200);
- if (x>enemyX)
- {
-  enemyX++;
- }
- if (x<enemyX)
- {
-  enemyX--;
- }
- if (y>enemyY)
- {
-  enemyY++;
- }
- if (y<enemyY)
- {
-  enemyY--;
- }
-}
-*/
-
-
-
-/*
- * void obstacles()
- * {
- * for (int i=3; i)
- *  {
- *  DrawPx(2,i,Red);
- *  DrawPx(5,i,Red);
- *  {
- * 
- */
